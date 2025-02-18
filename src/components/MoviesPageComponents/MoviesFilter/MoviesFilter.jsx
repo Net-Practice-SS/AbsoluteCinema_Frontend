@@ -60,10 +60,10 @@ function MoviesFilter({ setMovies }) {
                 <div>
                     <div> Age restriction </div>
                     <label>
-                        <input checked={moviesFilter.ageRestriction === true} type='radio' name='age' value={true} onChange={setAgeRestriction} /> Yes
+                        <input type='radio' name='age' value={true} onChange={setAgeRestriction} /> Yes
                     </label>
                     <label>
-                        <input checked={moviesFilter.ageRestriction === false} type='radio' name='age' value={false} onChange={setAgeRestriction} /> No
+                        <input type='radio' name='age' value={false} onChange={setAgeRestriction} /> No
                     </label>
                 </div>
 

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { useParams } from "react-router-dom"
+import { useNavigate, useParams } from "react-router-dom"
 
 import Place from "../../../components/BookingPageComponents/Place/Place"
 import TicketInfo from "../../../components/BookingPageComponents/TicketInfo/TicketInfo"
@@ -11,6 +11,7 @@ import userUtils from "../../../helpers/userUtils"
 import styles from "./styles/BookingPage.module.css"
 
 function BookingPage() {
+    const navigate = useNavigate()
     const { id } = useParams()
     const selectedMovie = sessionStorage.getItem("movieTitle")
     const [sessionInfo, setSessionInfo] = useState({})
@@ -76,23 +77,29 @@ function BookingPage() {
     }
 
     function bookTickets() {
+        const token = localStorage.getItem("token")
+        if (!token) {
+            navigate('/signin')
+        }
         selectedTickets.forEach(ticket => {
-            let formData = new FormData()
-            formData.append("SessionId", id)
-            formData.append("UserId", ticket.userId)
-            formData.append("Row", ticket.row)
-            formData.append("Place", ticket.place)
-            formData.append("StatusId", ticket.statusId)
-            formData.append("Price", ticket.price)
-
             fetch(`https://localhost:7118/api/Ticket/CreateTicket`, {
                 method: "POST",
-                body: formData
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    SessionId: Number(id),
+                    UserId: Number(ticket.userId),
+                    Row: ticket.row,
+                    Place: ticket.place,
+                    StatusId: ticket.statusId,
+                    Price: ticket.price
+                })
             })
-                .then(response => response.json())
-                .then(data => {
-                    if (data) {
-
+                .then(response => {
+                    console.log(response)
+                    if (response.ok) {
                         setSelectedTickets([])
                     }
                 })
